@@ -3,302 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Surprise For You!</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+    <title>Lohri Surprise For You</title>
     <style>
-        /* --- General Reset & Body --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { 
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: radial-gradient(circle at center, #1a0b12, #000000);
-            font-family: 'Poppins', sans-serif;
-            overflow: hidden;
-            position: relative;
-            /* Text selection disable taaki copy na kar sake */
-            user-select: none; 
-            -webkit-user-select: none;
+            height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center;
+            background: radial-gradient(circle at center, #2c1505, #000000);
+            overflow: hidden; position: relative; user-select: none;
         }
 
-        /* --- 1. LOGIN SCREEN STYLES --- */
         #login-screen {
-            position: absolute;
-            z-index: 100;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-            width: 90%;
-            max-width: 350px;
+            position: absolute; z-index: 100; text-align: center; background: rgba(255, 255, 255, 0.1);
+            padding: 30px; border-radius: 15px; backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 0 20px rgba(255, 165, 0, 0.3);
+            width: 90%; max-width: 350px;
         }
 
-        #login-screen h2 {
-            color: #ff0000;
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            text-shadow: 0 0 5px rgba(0,0,0,0.5);
-        }
-
+        #login-screen h2 { color: #ffa500; font-size: 1.8rem; margin-bottom: 20px; }
         #password-input {
-            padding: 12px;
-            font-size: 1rem;
-            border-radius: 30px;
-            border: 2px solid #d61c4e;
-            outline: none;
-            text-align: center;
-            width: 80%;
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
-            margin-bottom: 20px;
+            padding: 12px; font-size: 1rem; border-radius: 5px; border: 1px solid #ffa500;
+            outline: none; text-align: center; width: 80%; background: white; margin-bottom: 20px;
         }
 
-        #login-btn {
-            padding: 10px 30px;
-            background: #ff0000;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            font-family: 'Dancing Script', cursive;
+        #login-btn { padding: 12px 30px; background: #ffa500; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; }
+
+        #video-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 1000; justify-content: center; align-items: center;
+            flex-direction: column; text-align: center;
         }
 
-        #error-msg {
-            color: #ff4d4d; margin-top: 10px; font-size: 0.9rem; display: none;
-        }
+        #video-modal video { width: 85%; max-width: 350px; border: 2px solid #ffa500; border-radius: 10px; }
 
-        /* --- 2. ANIMATION STYLES --- */
-        .petal {
-            position: absolute; top: -50px; font-size: 20px; opacity: 0.9; z-index: 20;
-            animation: fallDown linear forwards; pointer-events: none;
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
-        }
+        .scene { width: 85vw; max-width: 380px; display: none; opacity: 0; transition: opacity 1s ease-in; z-index: 10; }
+        .content-card { background: #fff8f0; padding: 25px; border-radius: 15px; text-align: center; border: 3px solid #ffa500; }
+        .main-video { width: 100%; border-radius: 10px; margin: 15px 0; background: #000; }
 
-        @keyframes fallDown {
-            0% { top: -50px; transform: translateX(0) rotate(0deg); }
-            100% { top: 110vh; transform: translateX(30px) rotate(360deg); }
-        }
-
-        .rising-heart {
-            position: absolute; bottom: -50px; font-size: 20px; opacity: 0; z-index: 5;
-            animation: floatUpHeart ease-in forwards;
-            filter: drop-shadow(0 2px 5px rgba(255, 105, 180, 0.4));
-        }
-
-        @keyframes floatUpHeart {
-            0% { bottom: -50px; transform: translateX(0) scale(0.5); opacity: 0; }
-            20% { opacity: 0.9; }
-            100% { bottom: 110vh; transform: translateX(20px) scale(1.1); opacity: 0; }
-        }
-
-        /* --- 3. BOOK SCENE --- */
-        .scene {
-            width: 80vw; max-width: 320px; aspect-ratio: 2/3; height: auto; max-height: 480px;
-            perspective: 1500px; z-index: 10;
-            display: none; opacity: 0; transition: opacity 1s ease-in;
-        }
-
-        .book {
-            width: 100%; height: 100%; position: relative;
-            transform-style: preserve-3d; cursor: pointer;
-            transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
-        }
-
-        .page {
-            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
-            border-radius: 5px 15px 15px 5px; transform-origin: left center;
-            transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
-            box-shadow: 5px 5px 20px rgba(0,0,0,0.5);
-        }
-
-        .front-cover {
-            background: linear-gradient(135deg, #7a0b2e 0%, #4a0010 100%);
-            z-index: 2; border: 3px solid #ff0000; backface-visibility: visible;
-            display: flex; justify-content: center; align-items: flex-end;
-        }
-
-        .ribbon {
-            position: absolute; top: 0; bottom: 0; left: 15%; width: 15%;
-            background: rgba(255, 215, 0, 0.2); border-left: 2px solid #ffd700; border-right: 2px solid #ffd700;
-        }
-
-        .click-hint {
-            color: #ff0000; margin-bottom: 20px; font-size: 0.9rem; font-weight: bold;
-            animation: pulse 1.5s infinite; text-shadow: 0 0 5px rgba(0,0,0,0.5);
-        }
-
-        @keyframes pulse { 
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.05); } 
-        }
-
-        .front-cover::after {
-             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-             z-index: -1; background: #fff0f5; transform: rotateY(180deg);
-             border-radius: 5px 15px 15px 5px; border-right: 5px solid #eee;
-        }
-
-        .inside-page {
-            background: #fff0f5; z-index: 1; padding: 20px;
-            display: flex; flex-direction: column; justify-content: center; text-align: center;
-            border-left: 2px solid #ccc; overflow-y: auto;
-        }
-
-        .inside-title {
-            font-family: 'Dancing Script', cursive; color: #d61c4e;
-            font-size: clamp(1.8rem, 5vw, 2.5rem); margin-bottom: 15px;
-        }
-
-        .message-text {
-            font-size: clamp(0.85rem, 3.5vw, 1.1rem); color: #444; line-height: 1.5;
-        }
-        
-        .signature {
-            margin-top: 15px; font-family: 'Dancing Script', cursive;
-            font-size: clamp(1.2rem, 4vw, 1.5rem); color: #d61c4e;
-        }
-
-        .book.book-open { transform: translateX(50%); }
-        .book.book-open .front-cover { transform: rotateY(-180deg); }
-
-        /* --- 4. RESPONSIVE ADJUSTMENTS --- */
-        @media (max-width: 600px) {
-            .scene { width: 85vw; height: 65vh; }
-            .book.book-open { transform: translateX(10%); }
+        .falling { position: absolute; pointer-events: none; top: -50px; animation: fall linear forwards; z-index: 5; }
+        @keyframes fall { 
+            0% { top: -50px; transform: rotate(0deg); } 
+            100% { top: 110vh; transform: rotate(360deg); } 
         }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <h2>Only For You 🔒</h2>
-        <p style="color:white; margin-bottom:15px; font-size:0.9rem;">Enter Password to Unlock</p>
+        <h2>🔒</h2>
         <input type="password" id="password-input" placeholder="Enter Code">
         <br>
-        <button id="login-btn" onclick="checkPassword()">Unlock ❤️</button>
-        <p id="error-msg">Wrong Password! Try again.</p>
+        <button id="login-btn" onclick="checkPassword()">Unlock</button>
+        <p id="error-msg" style="color: #ff4d4d; display:none; margin-top:10px;">Galat Password! 😂</p>
+    </div>
+
+    <div id="video-modal">
+        <h2 style="color: white; margin-bottom: 15px;">Galat Password! 😜</h2>
+        <video id="punishment-video" playsinline>
+            <source src="video.mp4" type="video/mp4">
+        </video>
+        <button style="margin-top:20px; padding:10px; cursor:pointer;" onclick="closeVideo()">Try Again</button>
     </div>
 
     <div class="scene" id="main-scene">
-        <div class="book" onclick="openBook()" id="myBook">
+        <div class="content-card">
+            <h1>🔥 Happy Lohri!</h1>
+            <p>"Udi-udi jaaye patang meri... Happy Lohri, Sandeep! 🔥"</p>
             
-            <div class="page front-cover">
-                <div class="ribbon"></div>
-                <div class="click-hint">Tap to Open ❤️</div>
-            </div>
-
-            <div class="page inside-page">
-                <h2 class="inside-title">❤️</h2>
-                <div class="message-text">
-                    Janmdin ki dher saari shubhkamnayein Sandeep! <br><br>
-                    
-                    मोहब्बत के चाँद को अपनी पनाह में रहने दो |<br>
-                    लबों को ना खोलो आँखों को कुछ कहने दो |<br>
-                    दिल पे हाथ रखो और कुछ देर रहने दो |<br>
-                    मुझे महसूस करो और अपने पास ही रहने दो!
-                    <br><br>
-                    🌹
-                </div>
-                <p class="signature">- Tumhara Apna</p>
-            </div>
-
+            <video id="birthday-video" class="main-video" controls playsinline>
+                <source src="myvideo.mp4" type="video/mp4">
+            </video>
+            
+            <p style="font-weight: bold; color: #d35400;">🪁</p>
         </div>
     </div>
 
     <script>
-        // --- SECURITY: DISABLE RIGHT CLICK & INSPECT ---
-        // 1. Disable Right Click
-        document.addEventListener('contextmenu', event => event.preventDefault());
-
-        // 2. Disable Keyboard Shortcuts (F12, Ctrl+U, Ctrl+Shift+I)
-        document.onkeydown = function(e) {
-            // F12 key
-            if(event.keyCode == 123) {
-               return false;
-            }
-            // Ctrl+Shift+I (Inspect)
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
-               return false;
-            }
-            // Ctrl+Shift+C (Inspect Element)
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
-               return false;
-            }
-            // Ctrl+Shift+J (Console)
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
-               return false;
-            }
-            // Ctrl+U (View Source)
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
-               return false;
-            }
-        }
-
-        // --- PASSWORD LOGIC ---
         function checkPassword() {
             const input = document.getElementById('password-input').value;
-            const errorMsg = document.getElementById('error-msg');
             const loginScreen = document.getElementById('login-screen');
             const mainScene = document.getElementById('main-scene');
-
-            // PASSWORD HERE (Change it if you want)
-            const correctPassword = "30102025"; 
-
-            if (input === correctPassword) {
+            const videoModal = document.getElementById('video-modal');
+            
+            if (input === "30102025") {
                 loginScreen.style.display = 'none';
                 mainScene.style.display = 'block';
-                setTimeout(() => { mainScene.style.opacity = '1'; }, 100);
+                setTimeout(() => { 
+                    mainScene.style.opacity = '1';
+                    document.getElementById('birthday-video').play();
+                }, 100);
             } else {
-                errorMsg.style.display = 'block';
-                document.getElementById('password-input').style.border = "2px solid yellow";
+                videoModal.style.display = 'flex';
+                document.getElementById('punishment-video').play();
             }
         }
 
-        // --- BOOK LOGIC ---
-        function openBook() {
-            document.getElementById('myBook').classList.toggle('book-open');
+        function closeVideo() {
+            document.getElementById('video-modal').style.display = 'none';
+            document.getElementById('punishment-video').pause();
         }
 
-        function createPetal() {
-            const petal = document.createElement('div');
-            petal.classList.add('petal');
-            const flowers = ['🌼', '💖', '💛', '💖', '💖', '🌼', '🌼'];
-            petal.innerText = flowers[Math.floor(Math.random() * flowers.length)];
-            const size = Math.random() * 15 + 10;
-            petal.style.fontSize = size + 'px';
-            petal.style.left = Math.random() * 100 + 'vw';
-            const duration = Math.random() * 3 + 4;
-            petal.style.animationDuration = duration + 's';
-            petal.style.transform = `rotate(${Math.random() * 360}deg)`;
-            document.body.appendChild(petal);
-            setTimeout(() => petal.remove(), duration * 1000);
+        function createFallingEffect() {
+            const el = document.createElement('div');
+            el.classList.add('falling');
+            el.innerText = ['🪁', '🔥', '🥜'][Math.floor(Math.random() * 3)];
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.fontSize = '20px';
+            el.style.animationDuration = '4s';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 4000);
         }
-
-        function createRisingHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('rising-heart');
-            const heartEmojis = ['❤️', '💖', '💗', '💓', '💞'];
-            heart.innerText = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
-            const size = Math.random() * 15 + 10;
-            heart.style.fontSize = size + 'px';
-            heart.style.left = Math.random() * 100 + 'vw';
-            const duration = Math.random() * 5 + 5;
-            heart.style.animationDuration = duration + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), duration * 1000);
-        }
-
-        setInterval(createPetal, 300);
-        setInterval(createRisingHeart, 600);
+        setInterval(createFallingEffect, 300);
     </script>
 </body>
 </html>
